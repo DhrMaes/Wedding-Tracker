@@ -1,0 +1,35 @@
+## .NET / C# Build Artifacts
+**/bin/
+**/obj/
+**/out/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.DotSettings.user
+_ReSharper*/
+TestResults/
+
+## Local Uploads & Media (Stored on self-hosted server volume)
+uploads/
+**/uploads/*
+!**/uploads/.gitkeep
+
+## OS & Temporary Files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*~
+
+## Secrets & Local Overrides
+appsettings.*.local.json
+*.local.json
+*.local.js
+firebase-config.local.js

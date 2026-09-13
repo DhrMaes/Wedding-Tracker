@@ -37,9 +37,9 @@
 
 		<section class="content">
 			<div class="page-actions reveal">
-				<button id="export-backup" class="btn-primary" type="button">Backup downloaden</button>
+				<button id="export-backup" class="btn-primary" type="button">Backup downloaden (.zip)</button>
 				<label class="btn-ghost" for="import-backup">Backup terugzetten</label>
-				<input id="import-backup" class="is-hidden" type="file" accept="application/json,.json" />
+				<input id="import-backup" class="is-hidden" type="file" accept=".zip,application/zip,.json,application/json" />
 			</div>
 			<article class="countdown-panel reveal">
 				<h2>Countdown naar onze wedding</h2>
@@ -95,6 +95,11 @@
 		</section>
 	</main>
 
+	<script src="firebase-config.js"></script>
+	<script src="firebase-config.local.js"></script>
+	<script src="sync-service.js"></script>
 	<script src="app.js"></script>
 </body>
 </html>
+
+

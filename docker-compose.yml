@@ -1,0 +1,16 @@
+services:
+  wedding-tracker:
+    image: ghcr.io/${GITHUB_OWNER:-dhrmaes}/wedding-tracker:${IMAGE_TAG:-latest}
+    container_name: wedding-tracker
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8095}:${INTERNAL_PORT:-8095}"
+    environment:
+      - ASPNETCORE_URLS=http://+:${INTERNAL_PORT:-8095}
+      - ASPNETCORE_ENVIRONMENT=Production
+      - WeddingTracker__UploadsDirectory=/app/uploads
+    volumes:
+      - wedding-tracker-uploads:/app/uploads
+
+volumes:
+  wedding-tracker-uploads:

@@ -1,0 +1,49 @@
+{
+  "name": "Wedding Tracker (.NET 10 & Web Dev)",
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/dotnet:2": {
+      "version": "10.0"
+    },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "version": "latest",
+      "enableNonRootDocker": "true"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "forwardPorts": [8095],
+  "portsAttributes": {
+    "8095": {
+      "label": "Wedding Tracker Web Server",
+      "onAutoForward": "notify"
+    }
+  },
+  "mounts": [
+    "source=weddingtracker-server-bin,target=${containerWorkspaceFolder}/src/WeddingTracker.Server/bin,type=volume",
+    "source=weddingtracker-server-obj,target=${containerWorkspaceFolder}/src/WeddingTracker.Server/obj,type=volume"
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "dotnet.defaultSolution": "WeddingTracker.slnx",
+        "omnisharp.enableRoslynAnalyzers": true,
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "files.trimTrailingWhitespace": true
+      },
+      "extensions": [
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "ms-azuretools.vscode-docker",
+        "ritwickdey.liveserver",
+        "formulahendry.auto-rename-tag",
+        "esbenp.prettier-vscode",
+        "bierner.markdown-preview-github-styles"
+      ]
+    }
+  },
+  "updateContentCommand": "sudo chown -R vscode:vscode src/WeddingTracker.Server/bin src/WeddingTracker.Server/obj",
+  "postCreateCommand": "sudo chown -R vscode:vscode src/WeddingTracker.Server/bin src/WeddingTracker.Server/obj && dotnet restore WeddingTracker.slnx",
+  "postStartCommand": "sudo chown -R vscode:vscode src/WeddingTracker.Server/bin src/WeddingTracker.Server/obj",
+  "remoteUser": "vscode"
+}

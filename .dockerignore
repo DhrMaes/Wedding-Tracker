@@ -1,0 +1,16 @@
+**/.git
+**/.github
+**/.devcontainer
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/TestResults
+uploads
+**/uploads
+README.md
+LICENSE
+.gitignore
+.dockerignore
+Dockerfile
+docker-compose.yml

@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Wedding Tracker (.NET 10)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "presentation": {
+        "group": "wedding-tracker",
+        "order": 1
+      },
+      "program": "${workspaceFolder}/src/WeddingTracker.Server/bin/Debug/net10.0/WeddingTracker.Server.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/WeddingTracker.Server",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/app.html"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:8095"
+      }
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach"
+    }
+  ]
+}

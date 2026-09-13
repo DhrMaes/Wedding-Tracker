@@ -57,19 +57,29 @@ const currency = new Intl.NumberFormat("nl-BE", {
   maximumFractionDigits: 0,
 });
 
+window.STATE_CACHE = window.STATE_CACHE || {};
+
 function readJson(key, fallback = []) {
   try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
+    if (Object.prototype.hasOwnProperty.call(window.STATE_CACHE, key)) {
+      const val = window.STATE_CACHE[key];
+      return val !== undefined ? JSON.parse(JSON.stringify(val)) : fallback;
+    }
+    return fallback;
   } catch {
     return fallback;
   }
 }
 
 function saveJson(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+  window.STATE_CACHE[key] = value;
   if (key === STORAGE_KEYS.thriftStore) {
     updateThriftStoreBudget(value);
+  }
+  if (typeof window.saveToFirestore === "function") {
+    window.saveToFirestore(key, value).catch((err) => {
+      console.error("Firestore sync error:", err);
+    });
   }
 }
 
@@ -79,9 +89,15 @@ function updateThriftStoreBudget(entries = readJson(STORAGE_KEYS.thriftStore)) {
   const row = rows.find((entry) => entry.source === "thrift-store");
 
   if (row) {
+    if (row.actual === total && row.paid === true) {
+      return; // No change, do not write to Firestore
+    }
     row.actual = total;
     row.paid = true;
   } else {
+    if (total === 0 && rows.length === 0) {
+      return; // Do not write default dummy row if database is loading
+    }
     rows.push({
       id: uid(),
       name: "Kringwinkel koopjes",
@@ -92,7 +108,10 @@ function updateThriftStoreBudget(entries = readJson(STORAGE_KEYS.thriftStore)) {
     });
   }
 
-  localStorage.setItem(STORAGE_KEYS.budget, JSON.stringify(rows));
+  window.STATE_CACHE[STORAGE_KEYS.budget] = rows;
+  if (typeof window.saveToFirestore === "function") {
+    window.saveToFirestore(STORAGE_KEYS.budget, rows).catch(console.error);
+  }
 }
 
 async function compressImage(dataUrl) {
@@ -184,16 +203,22 @@ function compressStoredThriftImages() {
 function lightenStoredThriftImages() {
   const entries = readJson(STORAGE_KEYS.thriftStore);
   const needsUpdate = entries.some((entry) => String(entry.image || "").startsWith("data:image/jpeg"));
-  if (!needsUpdate || localStorage.getItem("weddingTracker.lightenedImageBackgrounds")) {
+  if (!needsUpdate || window.STATE_CACHE["weddingTracker.lightenedImageBackgrounds"]) {
     return;
   }
 
   Promise.all(entries.map(async (entry) => ({ ...entry, image: await lightenBlackImageBackground(entry.image) })))
     .then((updatedEntries) => {
       saveJson(STORAGE_KEYS.thriftStore, updatedEntries);
-      localStorage.setItem("weddingTracker.lightenedImageBackgrounds", "true");
+      window.STATE_CACHE["weddingTracker.lightenedImageBackgrounds"] = true;
     })
     .catch((error) => console.error("Fotoachtergronden aanpassen mislukt:", error));
+}
+
+async function dataUrlToFile(dataUrl, filename = "photo.jpg") {
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+  return new File([blob], filename, { type: blob.type || "image/jpeg" });
 }
 
 function initBackupExport() {
@@ -203,47 +228,117 @@ function initBackupExport() {
     return;
   }
 
-  exportButton.addEventListener("click", () => {
-    const backup = Object.fromEntries(
-      Object.entries(STORAGE_KEYS).map(([name, key]) => [name, readJson(key)]),
-    );
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `wedding-tracker-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+  if (exportButton.dataset.initialized === "true") {
+    return;
+  }
+  exportButton.dataset.initialized = "true";
+
+  exportButton.addEventListener("click", async () => {
+    const originalText = exportButton.textContent;
+    exportButton.textContent = "Backup maken...";
+
+    try {
+      const backup = Object.fromEntries(
+        Object.entries(STORAGE_KEYS).map(([name, key]) => [name, readJson(key)]),
+      );
+
+      const response = await fetch("/api/backup/export", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(backup, null, 2),
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `wedding-tracker-backup-${new Date().toISOString().slice(0, 10)}.zip`;
+        link.click();
+        URL.revokeObjectURL(url);
+      } else {
+        // Fallback to direct client JSON download if server export fails
+        const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `wedding-tracker-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (err) {
+      console.warn("Server ZIP export mislukt, val terug op lokale JSON:", err);
+      const backup = Object.fromEntries(
+        Object.entries(STORAGE_KEYS).map(([name, key]) => [name, readJson(key)]),
+      );
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `wedding-tracker-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      exportButton.textContent = originalText;
+    }
   });
 
   importInput.addEventListener("change", async () => {
     const file = importInput.files?.[0];
-    if (!file || !confirm("Je huidige gegevens in deze browser worden vervangen. Doorgaan?")) {
+    if (!file || !confirm("Je huidige gegevens worden vervangen door deze backup. Doorgaan?")) {
       importInput.value = "";
       return;
     }
 
+    const importLabel = document.querySelector("label[for='import-backup']");
+    const originalLabelText = importLabel ? importLabel.textContent : "Backup terugzetten";
+
     try {
-      const backup = JSON.parse(await file.text());
+      if (importLabel) importLabel.textContent = "Foto's & data importeren...";
+
+      // Send ZIP or JSON to server import endpoint
+      const formData = new FormData();
+      formData.append("backupFile", file);
+
+      const response = await fetch("/api/backup/import", {
+        method: "POST",
+        body: formData,
+      });
+
+      let backup = null;
+      if (response.ok) {
+        backup = await response.json();
+      } else {
+        // Fallback to client-side parsing if server endpoint is not reachable
+        backup = JSON.parse(await file.text());
+      }
+
       const isValid = Object.keys(STORAGE_KEYS).every((name) => Object.prototype.hasOwnProperty.call(backup, name));
       if (!isValid) {
         throw new Error("Dit is geen geldige Wedding Tracker-backup.");
       }
 
-      const thriftEntries = Array.isArray(backup.thriftStore)
-        ? await Promise.all(
-            backup.thriftStore.map(async (entry) => ({ ...entry, image: await compressImage(entry.image) })),
-          )
-        : [];
+      if (importLabel) importLabel.textContent = "Opslaan in Firestore...";
 
+      const fullState = {};
       Object.entries(STORAGE_KEYS).forEach(([name, key]) => {
-        localStorage.setItem(key, JSON.stringify(name === "thriftStore" ? thriftEntries : backup[name]));
+        const value = backup[name];
+        fullState[key] = value;
+        window.STATE_CACHE[key] = value;
       });
-      localStorage.removeItem("weddingTracker.lightenedImageBackgrounds");
-      updateThriftStoreBudget(thriftEntries);
+      delete window.STATE_CACHE["weddingTracker.lightenedImageBackgrounds"];
+      updateThriftStoreBudget(backup.thriftStore || []);
+
+      if (typeof window.saveFullStateToFirestore === "function") {
+        await window.saveFullStateToFirestore(fullState);
+      }
+
+      if (importLabel) importLabel.textContent = "Herladen...";
       location.reload();
     } catch (error) {
+      console.error("Backup import error:", error);
       alert(error.message || "De backup kon niet worden teruggezet.");
+      if (importLabel) importLabel.textContent = originalLabelText;
       importInput.value = "";
     }
   });
@@ -1425,12 +1520,14 @@ function initDashboardPage() {
           : `${currency.format(actual)} van ${currency.format(goal)} gebruikt. Nog ${currency.format(goal - actual)} beschikbaar.`;
     };
 
-    goalInput.addEventListener("input", () => {
-      saveJson(STORAGE_KEYS.budgetGoal, { amount: Number(goalInput.value) || 0 });
-      renderGoal();
-    });
+    if (!goalInput.dataset.bound) {
+      goalInput.dataset.bound = "true";
+      goalInput.addEventListener("change", () => {
+        saveJson(STORAGE_KEYS.budgetGoal, { amount: Number(goalInput.value) || 0 });
+        renderGoal();
+      });
+    }
 
-    saveJson(STORAGE_KEYS.budgetGoal, { amount: startAmount });
     renderGoal();
   }
 
@@ -1633,7 +1730,8 @@ function initThriftStorePage() {
 
         categoryEntries.forEach((entry) => {
           const image = String(entry.image || "");
-          const imageMarkup = image.startsWith("data:image/")
+          const hasImage = image.startsWith("data:image/") || image.startsWith("/uploads/") || image.startsWith("http");
+          const imageMarkup = hasImage
             ? `<img class="thrift-image" src="${escapeHtml(image)}" alt="Kringwinkelkoopje in ${escapeHtml(category)}" loading="lazy" />`
             : `<div class="thrift-image thrift-image-placeholder">geen foto</div>`;
           const card = document.createElement("article");
@@ -1671,16 +1769,36 @@ function initThriftStorePage() {
     }
 
     form.elements.image.setCustomValidity("");
-    const image = imageFile
-      ? await new Promise((resolve, reject) => {
+    let imageUrl = currentEntry?.image || "";
+
+    if (imageFile) {
+      if (typeof window.uploadImageToServer === "function") {
+        try {
+          const result = await window.uploadImageToServer(imageFile);
+          imageUrl = result.url;
+        } catch (uploadErr) {
+          console.warn("Upload naar server mislukt, val terug op gecomprimeerde lokale preview:", uploadErr);
+          imageUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.addEventListener("load", () => resolve(reader.result));
+            reader.addEventListener("error", reject);
+            reader.readAsDataURL(imageFile);
+          });
+          imageUrl = await compressImage(imageUrl);
+        }
+      } else {
+        imageUrl = await new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.addEventListener("load", () => resolve(reader.result));
           reader.addEventListener("error", reject);
           reader.readAsDataURL(imageFile);
-        })
-      : currentEntry?.image || "";
+        });
+        imageUrl = await compressImage(imageUrl);
+      }
+    }
+
     const values = {
-      image: await compressImage(image),
+      image: imageUrl,
       category: String(data.get("category") || "Overig").trim(),
       quantity: Number(data.get("quantity") || 0),
       cost: Number(data.get("cost") || 0),
@@ -1727,12 +1845,27 @@ function initThriftStorePage() {
   render();
 }
 
+let appInitialized = false;
+
 function init() {
   const page = document.body.dataset.page;
-  compressStoredThriftImages();
-  lightenStoredThriftImages();
   updateThriftStoreBudget();
   initBackupExport();
+
+  if (page === "dashboard") {
+    initDashboardPage();
+  }
+
+  if (appInitialized) {
+    if (typeof window.renderActivePage === "function") {
+      window.renderActivePage();
+    }
+    return;
+  }
+
+  appInitialized = true;
+  compressStoredThriftImages();
+  lightenStoredThriftImages();
 
   if (page === "budget") {
     initBudgetPage();
@@ -1765,11 +1898,16 @@ function init() {
   if (page === "brain-dump") {
     initBrainDumpPage();
   }
-
-  if (page === "dashboard") {
-    initDashboardPage();
-  }
-
 }
 
+// Purge any legacy browser storage
+try {
+  localStorage.clear();
+} catch (_) {}
+
 init();
+
+// Re-render automatically when real-time updates arrive from Firestore
+window.addEventListener("wedding-data-synced", () => {
+  init();
+});

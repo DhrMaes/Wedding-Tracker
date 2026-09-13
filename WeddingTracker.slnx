@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/WeddingTracker.Server/WeddingTracker.Server.csproj" />
+  </Folder>
+</Solution>

@@ -6,13 +6,17 @@ A bespoke, aesthetic, and completely vibe-coded wedding planning dashboard craft
 
 ---
 
-## ✨ The Vibe
+## ✨ The Vibe & Architecture
 
 Built with an earthy, warm botanical aesthetic inspired by woodland romance, golden-hour light, and cozy thrift-store adventures.
 
 - 🌿 **Color Palette**: Deep Forest Green (`#2D3930`), Soft Sage (`#C2CCA8`), Warm Apricot (`#F09721`), Soft Blush (`#FDD08D`), and Creamy Linen (`#EFE9D7`).
 - ✍️ **Typography**: Classical *Cinzel Decorative*, timeless *Marcellus*, and whimsical *Allura* accents.
 - 🧘 **Mood**: Calming, mindful, stress-free, and delightfully organized.
+- ⚡ **Clean Separation**: 
+  - **`src/WeddingTracker.App`**: Pure HTML/CSS/JS where your partner can vibe-code the frontend effortlessly.
+  - **`src/WeddingTracker.Server`**: Fast, lightweight C# ASP.NET Core (.NET 10) backend for self-hosting static assets and image uploads.
+  - **🔥 Firebase Firestore**: Real-time cross-device data synchronization with **explicit connection/error notifications** (no silent, desynchronized fallbacks).
 
 ---
 
@@ -29,35 +33,36 @@ Built with an earthy, warm botanical aesthetic inspired by woodland romance, gol
 | 💌 **Stationary & Drukwerk** | Track save-the-dates, official invitations, place cards, signage, and printing statuses. |
 | 🎁 **Bedankjes (Favors)** | Plan guest favors, sample ideas, quantity requirements, and packaging notes. |
 | 💡 **Brain Dump** | A freeform creative whiteboard for sudden 2 AM inspirations, aesthetic mood notes, and reminders. |
+| 🖼️ **Self-Hosted Image Uploads** | High-resolution image uploads hosted directly on your server via `POST /api/upload`. |
 | 💾 **Backup & Restore** | 1-click JSON export and import to keep your wedding planning data safe and portable forever. |
 
 ---
 
 ## 🛠️ Tech Stack & Philosophy
 
-- **100% Vanilla Web**: Pure HTML5, modern CSS3 (Custom Properties, CSS Grid, Glassmorphism, smooth micro-interactions), and vanilla JavaScript.
-- **Zero Build Step**: No `npm install`, no bundlers, no framework bloat. Just double-click and plan.
-- **Privacy-First & Offline-Ready**: Everything is stored locally in your browser’s `localStorage`. No cloud trackers, no database leaks, no monthly subscription fees.
-- **Data Portability**: Full JSON backup and restore with a single click right from the dashboard.
+- **Frontend**: Pure HTML5, modern CSS3 (Custom Properties, CSS Grid, Glassmorphism, smooth micro-interactions), and vanilla JavaScript.
+- **Backend Service**: C# (.NET 10 / ASP.NET Core) serving static assets and handling secure multipart image uploads into a persistent volume.
+- **Data Layer**: Cloud Firestore for seamless real-time syncing between devices, paired with an explicit visual connection/error banner.
+- **Deployment**: Automated via GitHub Actions building to GitHub Container Registry (`ghcr.io`) and deploying to Portainer over WireGuard VPN.
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started & Local Development
 
-### Option 1: Direct in Browser
-Simply open [`src/app.html`](src/app.html) directly in any web browser.
+### 1. Configure Firebase (Optional for Local Offline Mode)
+Open [`src/WeddingTracker.App/firebase-config.js`](src/WeddingTracker.App/firebase-config.js) and fill in your Firebase project credentials. If left empty, the app runs in local offline mode.
 
-### Option 2: Local Static Server (Recommended)
-If you prefer running via a lightweight local server:
-
+### 2. Run the .NET Server
 ```bash
-# Using npx serve
-npx serve src
-
-# Or using Python 3
-python -m http.server 8000 --directory src
+# From the repository root
+dotnet run --project src/WeddingTracker.Server
 ```
-Then navigate to `http://localhost:8000/app.html` or `http://localhost:3000/app.html`.
+Open `http://localhost:8095/app.html` in your browser.
+
+### 3. Run with Docker Compose
+```bash
+docker compose up --build
+```
 
 ---
 
@@ -65,20 +70,34 @@ Then navigate to `http://localhost:8000/app.html` or `http://localhost:3000/app.
 
 ```text
 Wedding-Tracker/
-├── README.md                  # You are here! 🌿
+├── .github/
+│   └── workflows/
+│       └── docker.yml               # GitHub Actions: build & Portainer deploy via WireGuard
+├── Dockerfile                        # Multi-stage .NET 10 Alpine build & runtime
+├── docker-compose.yml                # Docker Compose with persistent uploads volume
+├── WeddingTracker.slnx               # .NET Solution
+├── README.md                         # Project documentation
 └── src/
-    ├── app.html               # Main Dashboard & summary overview
-    ├── app.js                 # Complete app state & localStorage logic
-    ├── styles.css             # Botanical aesthetic styling & design tokens
-    ├── planning-timeline.html # Milestone & planning timeline
-    ├── budget.html            # Detailed budget manager & breakdown
-    ├── vendors.html           # Vendor selection & quotes
-    ├── kringwinkel-koopjes.html # Thrift store & DIY decor tracker
-    ├── gasten.html            # Guest list with multi-event RSVP tracking
-    ├── stationary.html        # Stationery & invitation tracker
-    ├── bedankjes.html         # Wedding favor planning
-    ├── brain-dump.html        # Brainstorming & aesthetic notes
-    └── checklist.html         # Quick task checklist
+    ├── WeddingTracker.App/          # 🌸 Girlfriend's Vibe-Coding Workspace
+    │   ├── app.html                 # Main Dashboard & summary overview
+    │   ├── app.js                   # Complete app state & UI logic
+    │   ├── firebase-config.js       # Firebase credentials configuration
+    │   ├── sync-service.js          # Firestore live sync & explicit error banners
+    │   ├── styles.css               # Botanical aesthetic styling & design tokens
+    │   ├── planning-timeline.html   # Milestone & planning timeline
+    │   ├── budget.html              # Detailed budget manager & breakdown
+    │   ├── vendors.html             # Vendor selection & quotes
+    │   ├── kringwinkel-koopjes.html # Thrift store & DIY decor tracker
+    │   ├── gasten.html              # Guest list with multi-event RSVP tracking
+    │   ├── stationary.html          # Stationery & invitation tracker
+    │   ├── bedankjes.html           # Wedding favor planning
+    │   ├── brain-dump.html          # Brainstorming & aesthetic notes
+    │   └── checklist.html           # Quick task checklist
+    │
+    └── WeddingTracker.Server/       # ⚡ C# ASP.NET Core Backend
+        ├── Program.cs               # Static file server, /api/upload & /health
+        ├── appsettings.json         # Server & uploads directory configuration
+        └── WeddingTracker.Server.csproj # .NET 10 Web Project
 ```
 
 ---

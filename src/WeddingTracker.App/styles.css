@@ -871,3 +871,101 @@ td {
     grid-template-columns: 1fr;
   }
 }
+
+/* --- Firebase / Sync Connection Indicator & Error Banner --- */
+.sync-status-badge {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.9rem;
+  background: rgba(255, 253, 247, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(45, 57, 48, 0.12);
+  font-size: 0.82rem;
+  color: var(--ink);
+  transition: all 0.25s ease;
+}
+
+.sync-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c0562a;
+}
+
+.sync-status-badge.connected .sync-dot {
+  background: #5b8a5b;
+  box-shadow: 0 0 6px #7d9b7a;
+}
+
+.sync-status-badge.connecting .sync-dot {
+  background: var(--warm-apricot);
+  animation: pulse 1.2s infinite ease-in-out;
+}
+
+.sync-status-badge.error .sync-dot {
+  background: #d32f2f;
+  box-shadow: 0 0 8px rgba(211, 47, 47, 0.5);
+}
+
+.sync-status-badge.error {
+  border-color: #d32f2f;
+  background: #fff0f0;
+  color: #900;
+  cursor: pointer;
+}
+
+.sync-error-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  background: #ba1a1a;
+  color: #ffffff;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  font-family: "Marcellus", serif;
+  animation: slideDown 0.3s ease;
+}
+
+.sync-error-banner strong {
+  font-weight: 700;
+}
+
+.sync-error-banner button {
+  background: #ffffff;
+  color: #ba1a1a;
+  border: none;
+  border-radius: 6px;
+  padding: 0.35rem 0.85rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.sync-error-banner button:hover {
+  transform: scale(1.05);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
