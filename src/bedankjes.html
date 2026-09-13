@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Tracker | Bedankjes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Allura&family=Cinzel+Decorative:wght@400;700&family=Marcellus&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="gifts" data-ideas-key="gifts" data-empty-text="Nog geen bedankjes toegevoegd.">
+  <div class="bg-shape shape-left"></div>
+  <div class="bg-shape shape-right"></div>
+
+  <header class="site-header compact">
+    <p class="eyebrow">Wedding Tracker</p>
+    <h1>Bedankjes</h1>
+    <p class="magic-line">A love story written in the trees.</p>
+  </header>
+
+  <main class="layout">
+    <nav class="side-nav" aria-label="Hoofdnavigatie">
+      <a class="nav-link" href="app.html">Dashboard</a>
+      <a class="nav-link" href="planning-timeline.html">Planning &amp; Timeline</a>
+      <a class="nav-link" href="budget.html">Budget</a>
+      <a class="nav-link" href="vendors.html">Leveranciers</a>
+      <a class="nav-link" href="kringwinkel-koopjes.html">Kringwinkel Koopjes</a>
+      <a class="nav-link" href="gasten.html">Gasten</a>
+      <a class="nav-link" href="stationary.html">Stationary</a>
+      <a class="nav-link active" href="bedankjes.html">Bedankjes</a>
+      <a class="nav-link" href="brain-dump.html">Brain Dump</a>
+    </nav>
+
+    <section class="content">
+      <article class="panel reveal">
+        <h2>Nieuw bedankje</h2>
+        <form id="ideas-form" class="form-grid">
+          <label>
+            Titel
+            <input name="title" required placeholder="Mini honingpotje" />
+          </label>
+          <label>
+            Notitie
+            <input name="note" placeholder="Aantal, prijs, leverancier..." />
+          </label>
+          <button type="submit" class="btn-primary">Bewaren</button>
+        </form>
+      </article>
+
+      <article class="panel reveal">
+        <h2>Ideeën</h2>
+        <div id="ideas-list" class="vendor-list"></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

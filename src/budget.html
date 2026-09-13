@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Tracker | Budget</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Allura&family=Cinzel+Decorative:wght@400;700&family=Marcellus&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="budget">
+  <div class="bg-shape shape-left"></div>
+  <div class="bg-shape shape-right"></div>
+
+  <header class="site-header compact">
+    <p class="eyebrow">Wedding Tracker</p>
+    <h1>Budget</h1>
+    <p class="magic-line">A little map for the magic and the money.</p>
+  </header>
+
+  <main class="layout">
+    <nav class="side-nav" aria-label="Hoofdnavigatie">
+      <a class="nav-link" href="app.html">Dashboard</a>
+      <a class="nav-link" href="planning-timeline.html">Planning &amp; Timeline</a>
+      <a class="nav-link active" href="budget.html">Budget</a>
+      <a class="nav-link" href="vendors.html">Leveranciers</a>
+      <a class="nav-link" href="kringwinkel-koopjes.html">Kringwinkel Koopjes</a>
+      <a class="nav-link" href="gasten.html">Gasten</a>
+      <a class="nav-link" href="stationary.html">Stationary</a>
+      <a class="nav-link" href="bedankjes.html">Bedankjes</a>
+      <a class="nav-link" href="brain-dump.html">Brain Dump</a>
+    </nav>
+
+    <section class="content">
+      <article class="panel reveal">
+        <h2>Nieuwe budgetlijn</h2>
+        <form id="budget-form" class="form-grid">
+          <label>
+            Naam
+            <input name="name" required placeholder="Bijv. uitnodigingen drukwerk" />
+          </label>
+          <label>
+            Categorie
+            <input name="category" list="budget-category-suggestions" required placeholder="Bijv. tuin, bruid, bruidegom, receptie" />
+            <datalist id="budget-category-suggestions">
+              <option value="Bridesmaid box"></option>
+              <option value="Bedankjes"></option>
+              <option value="Stationary"></option>
+              <option value="Kledij"></option>
+              <option value="Ceremony"></option>
+              <option value="Decoratie"></option>
+              <option value="Tuin"></option>
+              <option value="Bruid"></option>
+              <option value="Bruidegom"></option>
+              <option value="Servies"></option>
+              <option value="Receptie"></option>
+              <option value="Leveranciers"></option>
+            </datalist>
+          </label>
+          <label>
+            Bedrag (EUR)
+            <input name="actual" type="number" min="0" step="0.01" value="0" required />
+          </label>
+          <label class="checkbox-line">
+            <input name="paid" type="checkbox" />
+            Al betaald
+          </label>
+          <button type="submit" class="btn-primary">Toevoegen</button>
+        </form>
+      </article>
+
+      <article class="panel reveal">
+        <h2>Overzicht</h2>
+        <div class="summary-row">
+          <p>Totaal budget: <strong id="actual-total">EUR 0</strong></p>
+          <p>Totaal betaald: <strong id="paid-total">EUR 0</strong></p>
+          <p>Nog te betalen: <strong id="unpaid-total">EUR 0</strong></p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Naam</th>
+                <th>Categorie</th>
+                <th>Bedrag</th>
+                <th>Betaald?</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="budget-table-body"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

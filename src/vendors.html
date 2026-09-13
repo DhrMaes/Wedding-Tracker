@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Tracker | Leveranciers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Allura&family=Cinzel+Decorative:wght@400;700&family=Marcellus&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="vendors">
+  <div class="bg-shape shape-left"></div>
+  <div class="bg-shape shape-right"></div>
+
+  <header class="site-header compact">
+    <p class="eyebrow">Wedding Tracker</p>
+    <h1>Leveranciers</h1>
+    <p class="magic-line">Choosing the people who make the forest dream real.</p>
+  </header>
+
+  <main class="layout">
+    <nav class="side-nav" aria-label="Hoofdnavigatie">
+      <a class="nav-link" href="app.html">Dashboard</a>
+      <a class="nav-link" href="planning-timeline.html">Planning &amp; Timeline</a>
+      <a class="nav-link" href="budget.html">Budget</a>
+      <a class="nav-link active" href="vendors.html">Leveranciers</a>
+      <a class="nav-link" href="kringwinkel-koopjes.html">Kringwinkel Koopjes</a>
+      <a class="nav-link" href="gasten.html">Gasten</a>
+      <a class="nav-link" href="stationary.html">Stationary</a>
+      <a class="nav-link" href="bedankjes.html">Bedankjes</a>
+      <a class="nav-link" href="brain-dump.html">Brain Dump</a>
+    </nav>
+
+    <section class="content">
+      <article class="panel reveal">
+        <h2 id="vendor-form-title">Nieuwe leverancier</h2>
+        <form id="vendor-form" class="form-grid">
+          <label>
+            Naam
+            <input name="name" required placeholder="Studio Lumiere" />
+          </label>
+          <label>
+            Categorie
+            <input name="category" list="vendor-category-suggestions" required placeholder="Bijv. fotograaf" />
+            <datalist id="vendor-category-suggestions">
+              <option value="Locatie / domein"></option>
+              <option value="Fotograaf"></option>
+              <option value="Videograaf"></option>
+              <option value="Catering"></option>
+              <option value="Bar &amp; dranken"></option>
+              <option value="Taart &amp; dessert"></option>
+              <option value="Sanitair"></option>
+              <option value="Tent &amp; overkapping"></option>
+              <option value="Verhuur meubels"></option>
+              <option value="Verlichting &amp; geluid"></option>
+              <option value="DJ / muziek / band"></option>
+              <option value="Ceremoniemeester"></option>
+              <option value="Ambtenaar / celebrant"></option>
+              <option value="Bloemen / florist"></option>
+              <option value="Decoratie"></option>
+              <option value="Servies"></option>
+              <option value="Bruidsjurk"></option>
+              <option value="Pak bruidegom"></option>
+              <option value="Haar &amp; make-up"></option>
+              <option value="Ringen / juwelier"></option>
+              <option value="Drukwerk / stationary"></option>
+              <option value="Bedankjes"></option>
+              <option value="Fotobooth"></option>
+              <option value="Vervoer"></option>
+              <option value="Overnachting gasten"></option>
+              <option value="Kinderopvang"></option>
+              <option value="Schoonmaak / opruim"></option>
+              <option value="Verzekering"></option>
+              <option value="Overig"></option>
+            </datalist>
+          </label>
+          <label>
+            Contact
+            <input name="contact" placeholder="mail of telefoon" />
+          </label>
+          <label>
+            Offerte (EUR)
+            <input name="quote" type="number" min="0" step="0.01" value="0" />
+          </label>
+          <label>
+            Status
+            <select name="status">
+              <option value="To review">To review</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Booked">Booked</option>
+            </select>
+          </label>
+          <button type="submit" class="btn-primary">Toevoegen</button>
+          <button type="button" id="vendor-cancel-edit" class="btn-ghost is-hidden">Annuleren</button>
+        </form>
+      </article>
+
+      <article class="panel reveal">
+        <h2>Gekozen per categorie</h2>
+        <div id="vendors-picked-list" class="vendor-list"></div>
+      </article>
+
+      <article class="panel reveal">
+        <h2>Lijst per categorie</h2>
+        <div class="category-filter">
+          <label for="category-select">Filter op categorie:</label>
+          <select id="category-select">
+            <option value="">Alle categorieën</option>
+          </select>
+        </div>
+        <div id="vendors-list" class="vendor-groups"></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

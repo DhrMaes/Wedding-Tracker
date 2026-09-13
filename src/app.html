@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Wedding Tracker | Dashboard</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Allura&family=Cinzel+Decorative:wght@400;700&family=Marcellus&display=swap"
+		rel="stylesheet"
+	/>
+	<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="dashboard">
+	<div class="bg-shape shape-left"></div>
+	<div class="bg-shape shape-right"></div>
+
+	<header class="site-header">
+		<p class="eyebrow">Once Upon A Forever</p>
+		<h1>Wedding Tracker</h1>
+		<p class="magic-line">a love story written in the trees</p>
+	</header>
+
+	<main class="layout">
+		<nav class="side-nav" aria-label="Hoofdnavigatie">
+			<a class="nav-link active" href="app.html">Dashboard</a>
+			<a class="nav-link" href="planning-timeline.html">Planning &amp; Timeline</a>
+			<a class="nav-link" href="budget.html">Budget</a>
+			<a class="nav-link" href="vendors.html">Leveranciers</a>
+			<a class="nav-link" href="kringwinkel-koopjes.html">Kringwinkel Koopjes</a>
+			<a class="nav-link" href="gasten.html">Gasten</a>
+			<a class="nav-link" href="stationary.html">Stationary</a>
+			<a class="nav-link" href="bedankjes.html">Bedankjes</a>
+			<a class="nav-link" href="brain-dump.html">Brain Dump</a>
+		</nav>
+
+		<section class="content">
+			<div class="page-actions reveal">
+				<button id="export-backup" class="btn-primary" type="button">Backup downloaden</button>
+				<label class="btn-ghost" for="import-backup">Backup terugzetten</label>
+				<input id="import-backup" class="is-hidden" type="file" accept="application/json,.json" />
+			</div>
+			<article class="countdown-panel reveal">
+				<h2>Countdown naar onze wedding</h2>
+				<p id="countdown-display" class="countdown-value">-</p>
+				<p id="countdown-sub" class="task-meta"></p>
+			</article>
+
+			<div class="card-grid">
+				<article class="stat-card reveal">
+					<h2>Al betaald</h2>
+					<p id="budget-paid" class="stat-value">EUR 0</p>
+				</article>
+				<article class="stat-card reveal">
+					<h2>Gasten</h2>
+					<p id="guest-total" class="stat-value">0</p>
+				</article>
+				<article class="stat-card reveal">
+					<h2>Leveranciers gekozen</h2>
+					<p id="vendor-picked-count" class="stat-value">0</p>
+				</article>
+			</div>
+
+			<article class="panel reveal">
+				<h2>Budgetdoel</h2>
+				<label class="goal-line">
+					Streefbudget (EUR)
+					<input id="budget-goal-input" type="number" min="0" step="100" placeholder="Bijv. 8000" />
+				</label>
+				<div class="progress-track"><div id="budget-goal-bar" class="progress-fill"></div></div>
+				<p id="budget-goal-text" class="task-meta">Stel een streefbudget in om je voortgang te zien.</p>
+			</article>
+
+			<article class="panel reveal">
+				<h2>Uitgaven per categorie</h2>
+				<div class="chart-row">
+					<svg id="budget-donut" class="donut" viewBox="0 0 42 42" role="img" aria-label="Uitgaven per categorie">
+						<circle class="donut-ring" cx="21" cy="21" r="15.915" />
+						<g id="budget-donut-segments"></g>
+						<text id="budget-donut-total" class="donut-total" x="21" y="21.6" text-anchor="middle">EUR 0</text>
+					</svg>
+					<ul id="budget-by-category" class="chart-legend">
+						<li>Nog geen budgetlijnen toegevoegd.</li>
+					</ul>
+				</div>
+			</article>
+
+			<article class="panel reveal">
+				<h2>Eerstvolgende mijlpalen</h2>
+				<ol id="upcoming-milestones" class="mini-timeline">
+					<li>Nog geen mijlpalen ingepland.</li>
+				</ol>
+			</article>
+		</section>
+	</main>
+
+	<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Tracker | Kringwinkel Koopjes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Allura&family=Cinzel+Decorative:wght@400;700&family=Marcellus&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="thrift-store">
+  <div class="bg-shape shape-left"></div>
+  <div class="bg-shape shape-right"></div>
+
+  <header class="site-header compact">
+    <p class="eyebrow">Wedding Tracker</p>
+    <h1>Kringwinkel Koopjes</h1>
+    <p class="magic-line">Little finds for a day full of beautiful details.</p>
+  </header>
+
+  <main class="layout">
+    <nav class="side-nav" aria-label="Hoofdnavigatie">
+      <a class="nav-link" href="app.html">Dashboard</a>
+      <a class="nav-link" href="planning-timeline.html">Planning &amp; Timeline</a>
+      <a class="nav-link" href="budget.html">Budget</a>
+      <a class="nav-link" href="vendors.html">Leveranciers</a>
+      <a class="nav-link active" href="kringwinkel-koopjes.html">Kringwinkel Koopjes</a>
+      <a class="nav-link" href="gasten.html">Gasten</a>
+      <a class="nav-link" href="stationary.html">Stationary</a>
+      <a class="nav-link" href="bedankjes.html">Bedankjes</a>
+      <a class="nav-link" href="brain-dump.html">Brain Dump</a>
+    </nav>
+
+    <section class="content">
+      <article class="panel reveal">
+        <h2 id="thrift-form-title">Nieuw koopje</h2>
+        <form id="thrift-form" class="form-grid">
+          <label>
+            Foto
+            <input name="image" type="file" accept="image/*" />
+          </label>
+          <img id="thrift-image-preview" class="thrift-image-preview is-hidden" alt="Voorbeeld van de foto" />
+          <label>
+            Categorie
+            <input name="category" list="thrift-category-suggestions" required placeholder="Bijv. Grote borden" />
+            <datalist id="thrift-category-suggestions">
+              <option value="Grote borden"></option>
+              <option value="Middelmatige borden"></option>
+              <option value="Kleine borden"></option>
+              <option value="Koffietassen"></option>
+              <option value="Bierglazen"></option>
+              <option value="Fancy glazen"></option>
+              <option value="Drinkglazen"></option>
+              <option value="Bestek"></option>
+              <option value="Vazen/kannen"></option>
+              <option value="Taartplateau"></option>
+              <option value="Kommen"></option>
+              <option value="Decoratie"></option>
+              <option value="Overig"></option>
+            </datalist>
+          </label>
+          <label>
+            Aantal
+            <input name="quantity" type="number" min="1" step="1" value="1" required />
+          </label>
+          <label>
+            Totale kost (EUR)
+            <input name="cost" type="number" min="0" step="0.01" value="0" required />
+          </label>
+          <button type="submit" class="btn-primary">Toevoegen</button>
+          <button type="button" id="thrift-cancel-edit" class="btn-ghost is-hidden">Annuleren</button>
+        </form>
+      </article>
+
+      <article class="panel reveal">
+        <h2>Overzicht</h2>
+        <div id="thrift-summary" class="card-grid compact"></div>
+      </article>
+
+      <article class="panel reveal">
+        <h2>Koopjes per categorie</h2>
+        <div id="thrift-list" class="vendor-groups"></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

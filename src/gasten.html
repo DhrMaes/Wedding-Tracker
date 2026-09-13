@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Tracker | Gasten</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Allura&family=Cinzel+Decorative:wght@400;700&family=Marcellus&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="guests">
+  <div class="bg-shape shape-left"></div>
+  <div class="bg-shape shape-right"></div>
+
+  <header class="site-header compact">
+    <p class="eyebrow">Wedding Tracker</p>
+    <h1>Gasten</h1>
+    <p class="magic-line">Everyone we want under the trees.</p>
+  </header>
+
+  <main class="layout">
+    <nav class="side-nav" aria-label="Hoofdnavigatie">
+      <a class="nav-link" href="app.html">Dashboard</a>
+      <a class="nav-link" href="planning-timeline.html">Planning &amp; Timeline</a>
+      <a class="nav-link" href="budget.html">Budget</a>
+      <a class="nav-link" href="vendors.html">Leveranciers</a>
+      <a class="nav-link" href="kringwinkel-koopjes.html">Kringwinkel Koopjes</a>
+      <a class="nav-link active" href="gasten.html">Gasten</a>
+      <a class="nav-link" href="stationary.html">Stationary</a>
+      <a class="nav-link" href="bedankjes.html">Bedankjes</a>
+      <a class="nav-link" href="brain-dump.html">Brain Dump</a>
+    </nav>
+
+    <section class="content">
+      <article class="panel reveal">
+        <h2 id="guest-form-title">Nieuwe gast</h2>
+        <form id="guest-form" class="form-grid">
+          <label>
+            Naam
+            <input name="name" required placeholder="Bijv. Tante Marie" />
+          </label>
+          <label>
+            Groep
+            <input name="group" list="guest-group-suggestions" placeholder="Familie bruid, vrienden, collega's..." />
+            <datalist id="guest-group-suggestions">
+              <option value="Familie bruid"></option>
+              <option value="Familie bruidegom"></option>
+              <option value="Vrienden bruid"></option>
+              <option value="Vrienden bruidegom"></option>
+              <option value="Collega's"></option>
+              <option value="Buren"></option>
+              <option value="Kinderen"></option>
+            </datalist>
+          </label>
+          <label>
+            Notitie
+            <input name="note" placeholder="Dieet, allergie, overnachting..." />
+          </label>
+          <label class="toggle-line">
+            <span>Getuige</span>
+            <span class="toggle-slider">
+              <input name="getuige" type="checkbox" />
+              <span class="toggle-track" aria-hidden="true"></span>
+            </span>
+          </label>
+          <fieldset class="checkbox-group">
+            <legend>Uitgenodigd voor</legend>
+            <label class="checkbox-line"><input name="gemeentehuis" type="checkbox" /> Gemeentehuis</label>
+            <label class="checkbox-line"><input name="ceremonie" type="checkbox" /> Ceremonie</label>
+            <label class="checkbox-line"><input name="receptie" type="checkbox" /> Receptie</label>
+            <label class="checkbox-line"><input name="catering" type="checkbox" /> Catering</label>
+            <label class="checkbox-line"><input name="dansfeest" type="checkbox" /> Dansfeest</label>
+          </fieldset>
+          <button type="submit" class="btn-primary">Toevoegen</button>
+          <button type="button" id="guest-cancel-edit" class="btn-ghost is-hidden">Annuleren</button>
+        </form>
+      </article>
+
+      <article class="panel reveal">
+        <h2>Uitgenodigd voor</h2>
+        <div class="card-grid compact">
+          <article class="stat-card">
+            <h2>Totaal gasten</h2>
+            <p id="guest-count" class="stat-value">0</p>
+          </article>
+          <article class="stat-card">
+            <h2>Gemeentehuis</h2>
+            <p id="guest-gemeentehuis" class="stat-value">0/0</p>
+          </article>
+          <article class="stat-card">
+            <h2>Ceremonie</h2>
+            <p id="guest-ceremonie" class="stat-value">0/0</p>
+          </article>
+          <article class="stat-card">
+            <h2>Receptie</h2>
+            <p id="guest-receptie" class="stat-value">0/0</p>
+          </article>
+          <article class="stat-card">
+            <h2>Catering</h2>
+            <p id="guest-catering" class="stat-value">0/0</p>
+          </article>
+          <article class="stat-card">
+            <h2>Dansfeest</h2>
+            <p id="guest-dansfeest" class="stat-value">0/0</p>
+          </article>
+        </div>
+      </article>
+
+      <article class="panel reveal">
+        <h2>Overzicht</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Naam</th>
+                <th>Gemeentehuis</th>
+                <th>Ceremonie</th>
+                <th>Receptie</th>
+                <th>Catering</th>
+                <th>Dansfeest</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="guest-table-body"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Tracker | Stationary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Allura&family=Cinzel+Decorative:wght@400;700&family=Marcellus&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="stationary">
+  <div class="bg-shape shape-left"></div>
+  <div class="bg-shape shape-right"></div>
+
+  <header class="site-header compact">
+    <p class="eyebrow">Wedding Tracker</p>
+    <h1>Stationary</h1>
+    <p class="magic-line">A love story written in the trees.</p>
+  </header>
+
+  <main class="layout">
+    <nav class="side-nav" aria-label="Hoofdnavigatie">
+      <a class="nav-link" href="app.html">Dashboard</a>
+      <a class="nav-link" href="planning-timeline.html">Planning &amp; Timeline</a>
+      <a class="nav-link" href="budget.html">Budget</a>
+      <a class="nav-link" href="vendors.html">Leveranciers</a>
+      <a class="nav-link" href="kringwinkel-koopjes.html">Kringwinkel Koopjes</a>
+      <a class="nav-link" href="gasten.html">Gasten</a>
+      <a class="nav-link active" href="stationary.html">Stationary</a>
+      <a class="nav-link" href="bedankjes.html">Bedankjes</a>
+      <a class="nav-link" href="brain-dump.html">Brain Dump</a>
+    </nav>
+
+    <section class="content">
+      <article class="panel reveal">
+        <h2>Nieuw ontwerp</h2>
+        <form id="stationary-form" class="form-grid">
+          <label>
+            Titel
+            <input name="title" required placeholder="Uitnodiging ontwerp" />
+          </label>
+          <label>
+            Link (Canva, Pinterest, drukker...)
+            <input name="url" type="url" placeholder="https://www.canva.com/design/..." />
+          </label>
+          <label>
+            Preview afbeelding (URL)
+            <input name="image" type="url" placeholder="https://... .jpg" />
+          </label>
+          <label>
+            Type
+            <input name="category" list="stationary-type-suggestions" placeholder="Save the date, uitnodiging, menu..." />
+            <datalist id="stationary-type-suggestions">
+              <option value="Save the date"></option>
+              <option value="Uitnodiging"></option>
+              <option value="RSVP kaart"></option>
+              <option value="Menukaart"></option>
+              <option value="Naamkaartjes"></option>
+              <option value="Ceremonieboekje"></option>
+              <option value="Tafelplan"></option>
+              <option value="Bordjes &amp; signage"></option>
+              <option value="Bedankkaart"></option>
+            </datalist>
+          </label>
+          <label>
+            Notitie
+            <input name="note" placeholder="Papier, drukker, deadlines..." />
+          </label>
+          <button type="submit" class="btn-primary">Bewaren</button>
+        </form>
+      </article>
+
+      <article class="panel reveal">
+        <h2>Overzicht</h2>
+        <div id="stationary-list" class="preview-grid"></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
